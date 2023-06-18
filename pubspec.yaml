@@ -4,7 +4,6 @@ version: 1.3.0
 #homepage: 
 
 # from: https://github.com/jonataslaw/getsocket
-# last update: 1401-08-04
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
