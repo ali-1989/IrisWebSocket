@@ -1,83 +1,143 @@
 import 'dart:convert';
 
-class Close {
+
+class CloseException {
   final String? message;
   final int? reason;
 
-  Close(this.message, this.reason);
+  CloseException(this.message, this.reason);
 
   @override
   String toString() {
-    return 'Ws Closed by server, $reason,  $message';
+    return 'WebSocket Closed by server, code:$reason,  message:$message';
   }
 }
-///=========================================================================================================
-typedef OpenSocket = void Function();
-typedef CloseSocket = void Function(Close);
-typedef MessageSocket = void Function(dynamic val);
-///=========================================================================================================
-class SocketNotifier {
-  final _onMessages = <MessageSocket>[];
-  final _onEvents = <String, MessageSocket>{};
-  final _onCloses = <CloseSocket>[];
-  final _onErrors = <CloseSocket>[];
-  OpenSocket? open;
+///=============================================================================
+typedef OpenEvent = void Function();
+typedef CloseEvent = void Function(CloseException);
+typedef SocketMessage = void Function(dynamic value);
+///=============================================================================
+mixin class SocketNotifier {
+  final _onMessageListener = <SocketMessage>{};
+  final _eventListeners = <String, Set<SocketMessage>>{};
+  final _onCloseListeners = <CloseEvent>{};
+  final _onErrorListeners = <CloseEvent>{};
+  final _onOpenListeners = <OpenEvent>[];
 
-  void addMessages(MessageSocket socket) {
-    _onMessages.add((socket));
+  String _eventKey = 'event';
+  String dataKey = 'data';
+
+  String get eventKey => _eventKey;
+  void set eventKey(String event) => _eventKey = event;
+
+  void addOpenListener(OpenEvent listener) {
+    _onOpenListeners.add(listener);
   }
 
-  void addEvents(String event, MessageSocket socket) {
-    _onEvents[event] = socket;
+  void removeOpenListener(OpenEvent listener) {
+    _onOpenListeners.remove(listener);
   }
 
-  void addCloses(CloseSocket socket) {
-    _onCloses.add(socket);
+  void addMessageListener(SocketMessage listener) {
+    _onMessageListener.add(listener);
   }
 
-  void addErrors(CloseSocket socket) {
-    _onErrors.add((socket));
+  void removeMessageListener(SocketMessage listener) {
+    _onMessageListener.remove(listener);
+  }
+
+  void addEventListener(String event, SocketMessage listener) {
+    if(!_eventListeners.containsKey(event)){
+      _eventListeners[event] = <SocketMessage>{};
+    }
+
+    _eventListeners[event]!.add(listener);
+  }
+
+  void removeEventListener(String event, SocketMessage listener) {
+    if(!_eventListeners.containsKey(event)){
+     return;
+    }
+
+    _eventListeners[event]!.remove(listener);
+  }
+
+  void addCloseListener(CloseEvent listener) {
+    _onCloseListeners.add(listener);
+  }
+
+  void removeCloseListener(CloseEvent listener) {
+    _onCloseListeners.remove(listener);
+  }
+
+  void addErrorListener(CloseEvent listener) {
+    _onErrorListeners.add((listener));
+  }
+
+  void removeErrorListener(CloseEvent listener) {
+    _onErrorListeners.add((listener));
+  }
+
+  void notifyOpen() {
+    for (final listener in _onOpenListeners) {
+      try{
+        listener.call();
+      }
+      catch (e){/**/}
+    }
   }
 
   void notifyData(dynamic data) {
-    for (var item in _onMessages) {
-      item(data);
+    for (final listener in _onMessageListener) {
+      try{
+        listener.call(data);
+      }
+      catch (e){/**/}
     }
 
-    _tryOn(data);
+    _tryForEvent(data);
   }
 
-  void notifyClose(Close err) {
-    for (var item in _onCloses) {
-      item(err);
+  void notifyClose(CloseException err) {
+    for (final listener in _onCloseListeners) {
+      try{
+        listener(err);
+      }
+      catch (e){/**/}
     }
   }
 
-  void notifyError(Close err) {
-    for (var item in _onErrors) {
-      item(err);
+  void notifyError(CloseException err) {
+    for (final listener in _onErrorListeners) {
+      try{
+        listener(err);
+      }
+      catch (e){/**/}
     }
   }
 
-  void _tryOn(dynamic message) {
+  void _tryForEvent(dynamic message) {
     try {
       final Map<String, dynamic> msg = jsonDecode(message);
-      final event = msg['type'];
-      final data = msg['data'];
+      final event = msg[_eventKey];
+      final data = msg[dataKey];
 
-      if (_onEvents.containsKey(event)) {
-        _onEvents[event]?.call(data);
+      if (_eventListeners.containsKey(event)) {
+        for(final lis in _eventListeners[event]!){
+          try{
+            lis.call(data);
+          }
+          catch (e) {/**/}
+        }
       }
     }
-    catch (err) {
-      return;
-    }
+    catch (err) {/**/}
   }
 
-  void dispose() {
-    _onMessages.clear();
-    _onEvents.clear();
-    _onCloses.clear();
-    _onErrors.clear();
+  void disposeNotifier() {
+    _onMessageListener.clear();
+    _eventListeners.clear();
+    _onCloseListeners.clear();
+    _onErrorListeners.clear();
   }
 }

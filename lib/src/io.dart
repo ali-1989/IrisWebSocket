@@ -2,20 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'dart:math';
-import 'socket_notifier.dart';
+import 'package:iris_websocket/src/enums.dart';
 
-enum ConnectionStatus {
-  none,
-  connecting,
-  connected,
-  closed,
-}
-///==================================================================================================
-class BaseWebSocket {
-  SocketNotifier socketNotifier = SocketNotifier();
+import 'package:iris_websocket/src/socket_notifier.dart';
+
+
+class BaseWebSocket with SocketNotifier {
+  //SocketNotifier socketNotifier = SocketNotifier();
   ConnectionStatus connectionStatus = ConnectionStatus.none;
   String url;
-  WebSocket? socket;
+  WebSocket? wSocket;
   bool isDisposed = false;
   bool allowSelfSigned = false;
   Duration? _ping;
@@ -28,89 +24,66 @@ class BaseWebSocket {
 
   Future connect() async {
     if (isDisposed) {
-      socketNotifier = SocketNotifier();
+      throw Exception('WebSocket is disposed');
     }
 
     try {
       connectionStatus = ConnectionStatus.connecting;
 
       if(allowSelfSigned){
-        socket = await _connectForSelfSignedCert(url).then<WebSocket?>((value) => value).onError((error, st) => null);
+        wSocket = await _connectForSelfSignedCert(url).then<WebSocket?>((value) => value).onError((error, st) => null);
       }
       else {
-        socket = await WebSocket.connect(url).then<WebSocket?>((value) => value).onError((error, st) => null);
+        wSocket = await WebSocket.connect(url).then<WebSocket?>((value) => value).onError((error, st) => null);
       }
 
-      socket!.pingInterval = _ping;
-
-      socketNotifier.open?.call();
+      wSocket!.pingInterval = _ping;
       connectionStatus = ConnectionStatus.connected;
 
-      socket?.listen((data) {
-        socketNotifier.notifyData(data);
-      }
-      ,onError: (err) {
-        socketNotifier.notifyError(Close(err.toString(), 1005));
-      }
-      , onDone: () {
-        connectionStatus = ConnectionStatus.closed;
-        socketNotifier.notifyClose(Close('ws connection closed', socket?.closeCode));
-      }
-      , cancelOnError: true);
+      notifyOpen();
 
-      return;
+      wSocket?.listen((data) {
+          notifyData(data);
+        },
+        onError: (err) {
+          notifyError(CloseException(err.toString(), 0));
+        },
+        onDone: () {
+          connectionStatus = ConnectionStatus.closed;
+          notifyClose(CloseException('WebSocket connection closed by server', wSocket?.closeCode));
+        },
+         cancelOnError: true,
+      );
     }
     on SocketException catch (e) {
       connectionStatus = ConnectionStatus.closed;
-      socketNotifier.notifyError(Close(e.osError?.message, e.osError?.errorCode));
-      return;
+      notifyError(CloseException(e.osError?.message, e.osError?.errorCode));
     }
     catch (e) {
       connectionStatus = ConnectionStatus.closed;
-      socketNotifier.notifyError(Close(e.toString(), 0));
-      return;
+      notifyError(CloseException(e.toString(), 0));
     }
   }
 
-  void onOpen(OpenSocket fn) {
-    socketNotifier.open = fn;
-  }
-
-  void onClose(CloseSocket fn) {
-    socketNotifier.addCloses(fn);
-  }
-
-  void onError(CloseSocket fn) {
-    socketNotifier.addErrors(fn);
-  }
-
-  void onMessage(MessageSocket fn) {
-    socketNotifier.addMessages(fn);
-  }
-
-  void on(String event, MessageSocket message) {
-    socketNotifier.addEvents(event, message);
-  }
-
   void close([int? status, String? reason]) {
-    socket?.close(status, reason);
+    wSocket?.close(status, reason);
   }
 
-  void send(dynamic data) async {
+  Future<void> send(dynamic data) async {
     if (connectionStatus == ConnectionStatus.closed) {
       await connect();
     }
 
-    socket?.add(data);
+    wSocket?.add(data);
   }
 
   void dispose() {
-    socketNotifier.dispose();
+    disposeNotifier();
     isDisposed = true;
   }
 
   void emit(String event, dynamic data) {
-    send(jsonEncode({'type': event, 'data': data}));
+    send(jsonEncode({eventKey: event, dataKey: data}));
   }
 
   Future<WebSocket> _connectForSelfSignedCert(String url) async {

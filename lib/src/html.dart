@@ -2,17 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
-import 'socket_notifier.dart';
+import 'package:iris_websocket/src/enums.dart';
 
-enum ConnectionStatus {
-  none,
-  connecting,
-  connected,
-  closed,
-}
-///==========================================================================================================
-class BaseWebSocket {
-  SocketNotifier socketNotifier = SocketNotifier();
+import 'package:iris_websocket/src/socket_notifier.dart';
+
+class BaseWebSocket with SocketNotifier {
+  //SocketNotifier socketNotifier = SocketNotifier();
   ConnectionStatus connectionStatus = ConnectionStatus.none;
   bool isDisposed = false;
   String url;
@@ -21,72 +16,59 @@ class BaseWebSocket {
   Timer? _pingTimer;
 
   BaseWebSocket(this.url, {Duration? ping}) {
-    url = url.startsWith('https') ? url.replaceAll('https:', 'wss:') : url.replaceAll('http:', 'ws:');
+    url = url.startsWith('https') ? url.replaceFirst('https:', 'wss:') : url.replaceFirst('http:', 'ws:');
 
     if(ping != null) {
       _ping = ping;
-    } else {
-      _ping = const Duration(minutes: 4);
+    }
+    else {
+      _ping = const Duration(minutes: 3);
     }
   }
 
   void connect() {
     try {
+      if(isDisposed){
+        throw Exception('WebSocket is disposed.');
+      }
+
       connectionStatus = ConnectionStatus.connecting;
       socket = WebSocket(url);
 
-      socket.onOpen.listen((e) {
-        socketNotifier.open?.call();
+      socket.onOpen.listen((event) {
+        connectionStatus = ConnectionStatus.connected;
 
         _pingTimer = Timer.periodic(_ping, (t) {
-          socket.send('');
+          socket.send('ping_pong');
         });
 
-        connectionStatus = ConnectionStatus.connected;
+        notifyOpen();
       });
 
       socket.onMessage.listen((event) {
-        socketNotifier.notifyData(event.data);
+        notifyData(event.data);
       });
 
       socket.onClose.listen((e) {
         _pingTimer?.cancel();
 
         connectionStatus = ConnectionStatus.closed;
-        socketNotifier.notifyClose(Close(e.reason, e.code));
+        notifyClose(CloseException(e.reason, e.code));
       });
+
       socket.onError.listen((event) {
         _pingTimer?.cancel();
-        socketNotifier.notifyError(Close(event.toString(), 0));
         connectionStatus = ConnectionStatus.closed;
+        notifyError(CloseException(event.toString(), 0));
       });
     }
     catch (e) {
-      _pingTimer?.cancel();
-      socketNotifier.notifyError(Close(e.toString(), 500));
       connectionStatus = ConnectionStatus.closed;
+      _pingTimer?.cancel();
+      notifyError(CloseException(e.toString(), 500));
+
       //  close(500, e.toString());
     }
-  }
-
-  void onOpen(OpenSocket fn) {
-    socketNotifier.open = fn;
-  }
-
-  void onClose(CloseSocket fn) {
-    socketNotifier.addCloses(fn);
-  }
-
-  void onError(CloseSocket fn) {
-    socketNotifier.addErrors(fn);
-  }
-
-  void onMessage(MessageSocket fn) {
-    socketNotifier.addMessages(fn);
-  }
-
-  void on(String event, MessageSocket message) {
-    socketNotifier.addEvents(event, message);
   }
 
   void close([int? status, String? reason]) {
@@ -102,17 +84,16 @@ class BaseWebSocket {
       socket.send(data);
     }
     else {
-      //prin('WebSocket not connected, message $data not sent');
-      throw Exception('WebSocket not connected, message $data not sent');
+      throw Exception('WebSocket not connected, your message not sent. ($data)');
     }
   }
 
   void emit(String event, dynamic data) {
-    send(jsonEncode({'type': event, 'data': data}));
+    send(jsonEncode({eventKey: event, dataKey: data}));
   }
 
   void dispose() {
-    socketNotifier.dispose();
+    disposeNotifier();
     isDisposed = true;
   }
 }
