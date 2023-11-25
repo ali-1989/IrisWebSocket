@@ -9,7 +9,7 @@ class CloseException {
 
   @override
   String toString() {
-    return 'WebSocket Closed by server, code:$reason,  message:$message';
+    return 'WebSocket is Closed, code:$reason,  message:$message';
   }
 }
 ///=============================================================================

@@ -37,13 +37,19 @@ class BaseWebSocket with SocketNotifier {
         wSocket = await WebSocket.connect(url).then<WebSocket?>((value) => value).onError((error, st) => null);
       }
 
-      wSocket!.pingInterval = _ping;
-      connectionStatus = ConnectionStatus.connected;
-
-      notifyOpen();
-
+      if(wSocket != null){
+        connectionStatus = ConnectionStatus.connected;
+        notifyOpen();
+      }
+      else {
+        connectionStatus = ConnectionStatus.closed;
+        notifyError(CloseException('Can not connect to ws.', 1));
+      }
+      
+      wSocket?.pingInterval = _ping;
+      
       wSocket?.listen((data) {
-          notifyData(data);
+        notifyData(data);
         },
         onError: (err) {
           notifyError(CloseException(err.toString(), 0));
@@ -61,7 +67,7 @@ class BaseWebSocket with SocketNotifier {
     }
     catch (e) {
       connectionStatus = ConnectionStatus.closed;
-      notifyError(CloseException(e.toString(), 0));
+      notifyError(CloseException(e.toString(), 100));
     }
   }
 
@@ -93,7 +99,6 @@ class BaseWebSocket with SocketNotifier {
       final client = HttpClient(context: SecurityContext());
 
       client.badCertificateCallback = (X509Certificate cert, String host, int port) {
-        print('Base-WebSocket: Allow self-signed certificate => $host:$port. ');
         return true;
       };
 
