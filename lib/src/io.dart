@@ -23,6 +23,7 @@ class BaseWebSocket with SocketNotifier {
   }
 
   Future connect() async {
+    print('@@@@@@@@@@ connect');
     if (isDisposed) {
       throw Exception('WebSocket is disposed');
     }
@@ -64,10 +65,13 @@ class BaseWebSocket with SocketNotifier {
       );
     }
     on SocketException catch (e) {
+      print('@@@@@@@@@@ e: socket $e');
+
       connectionStatus = ConnectionStatus.closed;
       notifyError(CloseException(e.osError?.message, e.osError?.errorCode));
     }
     catch (e) {
+      print('@@@@@@@@@@ e $e');
       connectionStatus = ConnectionStatus.closed;
       notifyError(CloseException(e.toString(), 100));
     }

@@ -33,7 +33,7 @@
         <entry key="collection">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/collection-1.17.2/lib" />
+              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/collection-1.18.0/lib" />
             </list>
           </value>
         </entry>
@@ -54,7 +54,7 @@
         <entry key="flutter_lints">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/flutter_lints-3.0.0/lib" />
+              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/flutter_lints-3.0.1/lib" />
             </list>
           </value>
         </entry>
@@ -89,7 +89,7 @@
         <entry key="meta">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/meta-1.9.1/lib" />
+              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/meta-1.10.0/lib" />
             </list>
           </value>
         </entry>
@@ -117,14 +117,14 @@
         <entry key="stack_trace">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/stack_trace-1.11.0/lib" />
+              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/stack_trace-1.11.1/lib" />
             </list>
           </value>
         </entry>
         <entry key="stream_channel">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/stream_channel-2.1.1/lib" />
+              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/stream_channel-2.1.2/lib" />
             </list>
           </value>
         </entry>
@@ -145,7 +145,7 @@
         <entry key="test_api">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/test_api-0.6.0/lib" />
+              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/test_api-0.6.1/lib" />
             </list>
           </value>
         </entry>
@@ -159,7 +159,7 @@
         <entry key="web">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/web-0.1.4-beta/lib" />
+              <option value="$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/web-0.3.0/lib" />
             </list>
           </value>
         </entry>
@@ -170,22 +170,22 @@
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/boolean_selector-2.1.1/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/characters-1.3.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/clock-1.1.1/lib" />
-      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/collection-1.17.2/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/collection-1.18.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/fake_async-1.3.1/lib" />
-      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/flutter_lints-3.0.0/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/flutter_lints-3.0.1/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/lints-3.0.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/matcher-0.12.16/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/material_color_utilities-0.5.0/lib" />
-      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/meta-1.9.1/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/meta-1.10.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/path-1.8.3/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/source_span-1.10.0/lib" />
-      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/stack_trace-1.11.0/lib" />
-      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/stream_channel-2.1.1/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/stack_trace-1.11.1/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/stream_channel-2.1.2/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/string_scanner-1.2.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/term_glyph-1.2.1/lib" />
-      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/test_api-0.6.0/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/test_api-0.6.1/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/vector_math-2.1.4/lib" />
-      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/web-0.1.4-beta/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/Pubs/Cache/hosted/pub.dev/web-0.3.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/last/bin/cache/pkg/sky_engine/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/last/packages/flutter/lib" />
       <root url="file://$PROJECT_DIR$/../../../../SDKs/Flutter/last/packages/flutter_test/lib" />
