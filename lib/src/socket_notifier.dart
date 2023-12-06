@@ -24,11 +24,8 @@ mixin class SocketNotifier {
   final _onErrorListeners = <CloseEvent>{};
   final _onOpenListeners = <OpenEvent>[];
 
-  String _eventKey = 'event';
+  String eventKey = 'event';
   String dataKey = 'data';
-
-  String get eventKey => _eventKey;
-  void set eventKey(String event) => _eventKey = event;
 
   void addOpenListener(OpenEvent listener) {
     _onOpenListeners.add(listener);
@@ -81,8 +78,6 @@ mixin class SocketNotifier {
   void notifyOpen() {
     for (final listener in _onOpenListeners) {
       try{
-        print('@@@@@@@@@@ notify open');
-
         listener.call();
       }
       catch (e){/**/}
@@ -121,7 +116,7 @@ mixin class SocketNotifier {
   void _tryForEvent(dynamic message) {
     try {
       final Map<String, dynamic> msg = jsonDecode(message);
-      final event = msg[_eventKey];
+      final event = msg[eventKey];
       final data = msg[dataKey];
 
       if (_eventListeners.containsKey(event)) {
