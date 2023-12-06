@@ -1,6 +1,6 @@
 name: iris_websocket
 description: A extra light package to websocket on Flutter (Android, iOS, Web, Windows, Mac and Linux)
-version: 1.4.1
+version: 1.4.2
 #homepage: 
 
 # from: https://github.com/jonataslaw/getsocket

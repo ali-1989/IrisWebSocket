@@ -81,6 +81,8 @@ mixin class SocketNotifier {
   void notifyOpen() {
     for (final listener in _onOpenListeners) {
       try{
+        print('@@@@@@@@@@ notify open');
+
         listener.call();
       }
       catch (e){/**/}
