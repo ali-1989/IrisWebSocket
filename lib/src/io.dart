@@ -12,7 +12,7 @@ class BaseWebSocket with SocketNotifier {
   ConnectionStatus connectionStatus = ConnectionStatus.none;
   String url;
   WebSocket? wSocket;
-  bool isDisposed = false;
+  bool _isDisposed = false;
   bool allowSelfSigned = false;
   Duration? _ping;
 
@@ -22,8 +22,10 @@ class BaseWebSocket with SocketNotifier {
     }
   }
 
-  Future connect() async {
-    if (isDisposed) {
+  bool get isDisposed => _isDisposed;
+
+  Future connect({Map<String, dynamic>? headers, HttpClient? client}) async {
+    if (_isDisposed) {
       throw Exception('WebSocket is disposed');
     }
 
@@ -31,10 +33,12 @@ class BaseWebSocket with SocketNotifier {
       connectionStatus = ConnectionStatus.connecting;
 
       if(allowSelfSigned){
-        wSocket = await _connectForSelfSignedCert(url).then<WebSocket?>((value) => value).onError((error, st) => null);
+        wSocket = await _connectForSelfSignedCert(url, headers: headers)
+            .then<WebSocket?>((value) => value).onError((error, st) => null);
       }
       else {
-        wSocket = await WebSocket.connect(url).then<WebSocket?>((value) => value).onError((error, st) => null);
+        wSocket = await WebSocket.connect(url, headers: headers, customClient: client)
+            .then<WebSocket?>((value) => value).onError((error, st) => null);
       }
 
       if(wSocket != null){
@@ -44,8 +48,10 @@ class BaseWebSocket with SocketNotifier {
       else {
         connectionStatus = ConnectionStatus.closed;
         notifyError(CloseException('Can not connect to ws.', 1));
+        return;
       }
 
+      /// ping-pong message. default never.
       wSocket?.pingInterval = _ping;
       
       wSocket?.listen((data) {
@@ -85,14 +91,14 @@ class BaseWebSocket with SocketNotifier {
 
   void dispose() {
     disposeNotifier();
-    isDisposed = true;
+    _isDisposed = true;
   }
 
   void emit(String event, dynamic data) {
     send(jsonEncode({eventKey: event, dataKey: data}));
   }
 
-  Future<WebSocket> _connectForSelfSignedCert(String url) async {
+  Future<WebSocket> _connectForSelfSignedCert(String url, {Map<String, dynamic>? headers}) async {
     try {
       final Random r = Random();
       final key = base64.encode(List<int>.generate(8, (_) => r.nextInt(255)));
@@ -107,6 +113,12 @@ class BaseWebSocket with SocketNotifier {
       request.headers.add('Upgrade', 'websocket');
       request.headers.add('Sec-WebSocket-Version', '13');
       request.headers.add('Sec-WebSocket-Key', key.toLowerCase());
+
+      if(headers != null) {
+        for(final x in headers.entries){
+          request.headers.add(x.key, x.value);
+        }
+      }
 
       final response = await request.close();
       // ignore: close_sinks

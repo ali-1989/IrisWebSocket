@@ -9,11 +9,13 @@ import 'package:iris_websocket/src/socket_notifier.dart';
 class BaseWebSocket with SocketNotifier {
   //SocketNotifier socketNotifier = SocketNotifier();
   ConnectionStatus connectionStatus = ConnectionStatus.none;
-  bool isDisposed = false;
+  bool _isDisposed = false;
   String url;
   late Duration _ping;
   late WebSocket socket;
   Timer? _pingTimer;
+
+  bool get isDisposed => _isDisposed;
 
   BaseWebSocket(this.url, {Duration? ping}) {
     url = url.startsWith('https') ? url.replaceFirst('https:', 'wss:') : url.replaceFirst('http:', 'ws:');
@@ -28,7 +30,7 @@ class BaseWebSocket with SocketNotifier {
 
   void connect() {
     try {
-      if(isDisposed){
+      if(_isDisposed){
         throw Exception('WebSocket is disposed.');
       }
 
@@ -94,6 +96,6 @@ class BaseWebSocket with SocketNotifier {
 
   void dispose() {
     disposeNotifier();
-    isDisposed = true;
+    _isDisposed = true;
   }
 }

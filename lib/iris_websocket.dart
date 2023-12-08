@@ -1,9 +1,9 @@
 library iris_websocket;
 
-import 'src/html.dart' if (dart.library.io) 'src/io.dart';
+import 'src/io.dart' if (dart.library.html) 'src/html.dart';
 
 export 'package:iris_websocket/src/socket_notifier.dart';
 
-class GetSocket extends BaseWebSocket {
-  GetSocket(super.url, {super.ping});
+class IrisWebSocket extends BaseWebSocket {
+  IrisWebSocket(super.url, {super.ping});
 }
