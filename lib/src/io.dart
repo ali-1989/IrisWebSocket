@@ -23,7 +23,6 @@ class BaseWebSocket with SocketNotifier {
   }
 
   Future connect() async {
-    print('@@@@@@@@@@ connect');
     if (isDisposed) {
       throw Exception('WebSocket is disposed');
     }
@@ -38,7 +37,6 @@ class BaseWebSocket with SocketNotifier {
         wSocket = await WebSocket.connect(url).then<WebSocket?>((value) => value).onError((error, st) => null);
       }
 
-      print('@@@@@@@@@@ ${(wSocket != null)}');
       if(wSocket != null){
         connectionStatus = ConnectionStatus.connected;
         notifyOpen();
@@ -47,7 +45,6 @@ class BaseWebSocket with SocketNotifier {
         connectionStatus = ConnectionStatus.closed;
         notifyError(CloseException('Can not connect to ws.', 1));
       }
-      print('@@@@@@@@@@ set ping');
 
       wSocket?.pingInterval = _ping;
       
@@ -65,13 +62,10 @@ class BaseWebSocket with SocketNotifier {
       );
     }
     on SocketException catch (e) {
-      print('@@@@@@@@@@ e: socket $e');
-
       connectionStatus = ConnectionStatus.closed;
       notifyError(CloseException(e.osError?.message, e.osError?.errorCode));
     }
     catch (e) {
-      print('@@@@@@@@@@ e $e');
       connectionStatus = ConnectionStatus.closed;
       notifyError(CloseException(e.toString(), 100));
     }
