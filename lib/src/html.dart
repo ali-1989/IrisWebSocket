@@ -28,7 +28,7 @@ class BaseWebSocket with SocketNotifier {
     }
   }
 
-  void connect() {
+  void connect({dynamic client}) {
     try {
       if(_isDisposed){
         throw Exception('WebSocket is disposed.');
